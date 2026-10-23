@@ -1,0 +1,2104 @@
+<!doctype html>
+<html lang="en" data-theme="day">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <title>Grupo Pipa — The Connected Ecosystem</title>
+  <meta
+    name="description"
+    content="How Grupo Pipa connects hospitality, gastronomy, daytime leisure, wellness, digital menus, reservations, local discovery and guest conversion."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --orange: #e7642c;
+      --orange-soft: #ef8154;
+
+      --ivory: #f5ecdc;
+      --ivory-2: #ede0ca;
+      --espresso: #241d19;
+      --espresso-2: #332924;
+
+      --bg: var(--ivory);
+      --surface: rgba(255,255,255,.32);
+      --surface-solid: #eee2d0;
+      --text: var(--espresso);
+      --muted: rgba(36,29,25,.64);
+      --line: rgba(36,29,25,.14);
+      --header-bg: rgba(245,236,220,.88);
+
+      --shadow:
+        0 22px 60px rgba(50,31,18,.08),
+        0 2px 8px rgba(50,31,18,.05);
+
+      --radius-sm: 14px;
+      --radius-md: 24px;
+      --radius-lg: 36px;
+
+      --page: min(1440px, calc(100vw - 40px));
+      --serif: "Instrument Serif", Georgia, serif;
+      --sans: "Instrument Sans", Arial, sans-serif;
+
+      --ease: cubic-bezier(.22,.8,.24,1);
+    }
+
+    html[data-theme="night"] {
+      --bg: #1c1816;
+      --surface: rgba(255,255,255,.045);
+      --surface-solid: #27211e;
+      --text: #f6eedf;
+      --muted: rgba(246,238,223,.62);
+      --line: rgba(246,238,223,.13);
+      --header-bg: rgba(28,24,22,.9);
+
+      --shadow:
+        0 30px 80px rgba(0,0,0,.24),
+        0 2px 8px rgba(0,0,0,.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      transition:
+        background .45s var(--ease),
+        color .45s var(--ease);
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    ::selection {
+      background: var(--orange);
+      color: white;
+    }
+
+    .container {
+      width: var(--page);
+      margin-inline: auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .display {
+      font-family: var(--serif);
+      font-size: clamp(3.5rem, 9vw, 9rem);
+      line-height: .83;
+      font-weight: 400;
+      letter-spacing: -.055em;
+      margin: 0;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 5.6rem);
+      line-height: .92;
+      font-weight: 400;
+      letter-spacing: -.045em;
+      margin: 16px 0 0;
+    }
+
+    .lead {
+      font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+      line-height: 1.55;
+      max-width: 680px;
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .section {
+      padding: clamp(86px, 11vw, 170px) 0;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0,1.3fr) minmax(280px,.7fr);
+      gap: 60px;
+      align-items: end;
+      margin-bottom: 60px;
+    }
+
+    .section-head .lead {
+      justify-self: end;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity .8s var(--ease),
+        transform .8s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* HEADER */
+
+    .site-header {
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 18px;
+      width: min(1180px, calc(100vw - 28px));
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--header-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+      transition: .35s var(--ease);
+    }
+
+    .header-inner {
+      height: 66px;
+      padding: 8px 10px 8px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 104px;
+    }
+
+    .brand img {
+      width: 76px;
+      max-height: 43px;
+      object-fit: contain;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 27px;
+      font-size: 13px;
+    }
+
+    .desktop-nav a {
+      color: var(--muted);
+      transition: color .2s ease;
+    }
+
+    .desktop-nav a:hover {
+      color: var(--text);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .round-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .menu-trigger {
+      display: none;
+    }
+
+    .theme-icon {
+      width: 15px;
+      height: 15px;
+      border: 1.5px solid currentColor;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .theme-icon::after {
+      content: "";
+      position: absolute;
+      inset: 3px -4px -4px 3px;
+      border-radius: 50%;
+      background: var(--header-bg);
+    }
+
+    /* MOBILE MENU */
+
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 1500;
+      background: var(--bg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: .32s var(--ease);
+    }
+
+    .mobile-menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+
+    .mobile-menu-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mobile-menu-top img {
+      width: 84px;
+    }
+
+    .mobile-links {
+      margin: auto 0;
+    }
+
+    .mobile-links a {
+      display: block;
+      font-family: var(--serif);
+      font-size: clamp(2.7rem, 13vw, 5rem);
+      line-height: .98;
+      letter-spacing: -.04em;
+      padding: 4px 0;
+    }
+
+    .mobile-menu-bottom {
+      border-top: 1px solid var(--line);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* HERO */
+
+    .hero {
+      min-height: 100svh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      color: white;
+      background: #2d231f;
+    }
+
+    .hero-media {
+      position: absolute;
+      inset: 0;
+    }
+
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 64%;
+      transform: scale(1.015);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(25,14,10,.1) 0%,
+          rgba(25,14,10,.08) 35%,
+          rgba(25,14,10,.38) 64%,
+          rgba(20,11,8,.83) 100%
+        );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: var(--page);
+      margin: 0 auto;
+      padding: 160px 0 56px;
+    }
+
+    .hero-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 30px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      color: rgba(255,255,255,.72);
+    }
+
+    .hero .display {
+      max-width: 1120px;
+    }
+
+    .hero-sub {
+      margin-top: 36px;
+      display: grid;
+      grid-template-columns: 1fr minmax(280px,520px);
+      gap: 50px;
+      align-items: end;
+    }
+
+    .hero-sub p {
+      margin: 0;
+      color: rgba(255,255,255,.74);
+      line-height: 1.55;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-height: 48px;
+      padding: 0 19px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: .25s ease;
+    }
+
+    .btn-light {
+      background: white;
+      color: #241d19;
+      border-color: white;
+    }
+
+    .btn-orange {
+      background: var(--orange);
+      color: white;
+      border-color: var(--orange);
+    }
+
+    .btn-ghost-light {
+      border-color: rgba(255,255,255,.28);
+      color: white;
+      background: rgba(255,255,255,.05);
+      backdrop-filter: blur(7px);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* MARQUEE */
+
+    .marquee-wrap {
+      overflow: hidden;
+      border-block: 1px solid var(--line);
+      padding: 16px 0;
+    }
+
+    .marquee {
+      width: max-content;
+      display: flex;
+      gap: 28px;
+      animation: marquee 28s linear infinite;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .11em;
+      color: var(--muted);
+    }
+
+    .marquee span::after {
+      content: "✦";
+      color: var(--orange);
+      margin-left: 28px;
+    }
+
+    @keyframes marquee {
+      to { transform: translateX(-50%); }
+    }
+
+    /* BIG STATEMENT */
+
+    .statement {
+      max-width: 1120px;
+    }
+
+    .statement p {
+      font-family: var(--serif);
+      font-size: clamp(2.7rem, 6.1vw, 6.9rem);
+      line-height: .98;
+      letter-spacing: -.045em;
+      margin: 0;
+    }
+
+    .statement em {
+      color: var(--orange);
+      font-style: italic;
+    }
+
+    /* BUSINESS STRIP */
+
+    .business-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 12px;
+    }
+
+    .business-card {
+      position: relative;
+      min-height: 270px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+      transition:
+        transform .35s var(--ease),
+        border-color .35s ease;
+    }
+
+    .business-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(231,100,44,.35);
+    }
+
+    .business-card .number {
+      font-family: var(--serif);
+      font-size: 16px;
+      color: var(--orange);
+    }
+
+    .business-card h3 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: -.035em;
+      margin: 0 0 8px;
+    }
+
+    .business-card p {
+      margin: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+    }
+
+    /* ARCHITECTURE */
+
+    .architecture {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: clamp(26px, 4vw, 54px);
+    }
+
+    .channel-row {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 10px;
+    }
+
+    .channel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      font-size: 13px;
+      min-height: 72px;
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+    }
+
+    .architecture-arrow {
+      width: 1px;
+      height: 56px;
+      background: var(--line);
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .architecture-arrow::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: -3px;
+      width: 6px;
+      height: 6px;
+      border-right: 1px solid var(--muted);
+      border-bottom: 1px solid var(--muted);
+      transform: rotate(45deg);
+    }
+
+    .core-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      max-width: 880px;
+      margin: auto;
+    }
+
+    .core {
+      min-height: 180px;
+      border-radius: 24px;
+      padding: 28px;
+      background: var(--espresso);
+      color: #f7edde;
+      position: relative;
+      overflow: hidden;
+    }
+
+    html[data-theme="night"] .core {
+      background: #efe4d2;
+      color: #241d19;
+    }
+
+    .core.orange {
+      background: var(--orange);
+      color: white;
+    }
+
+    .core h3 {
+      font-family: var(--serif);
+      font-size: clamp(2rem,4vw,3.4rem);
+      line-height: .95;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    .core p {
+      max-width: 330px;
+      color: currentColor;
+      opacity: .7;
+      margin: 14px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 10px;
+      max-width: 720px;
+      margin: auto;
+    }
+
+    .action-node {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 16px;
+      text-align: center;
+      background: var(--bg);
+      font-size: 13px;
+    }
+
+    /* JOURNEY */
+
+    .journey {
+      display: grid;
+      grid-template-columns: repeat(5,1fr);
+      gap: 12px;
+    }
+
+    .journey-card {
+      min-height: 310px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      color: white;
+      background: #33261e;
+    }
+
+    .journey-card img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+    }
+
+    .journey-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top,rgba(15,10,8,.75),rgba(15,10,8,.04));
+    }
+
+    .journey-copy {
+      z-index: 2;
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+    }
+
+    .journey-copy small {
+      opacity: .64;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .journey-copy h3 {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      margin: 5px 0 0;
+      line-height: .96;
+    }
+
+    /* RESERVATION FLOW */
+
+    .flow {
+      display: grid;
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      grid-template-columns: repeat(6,1fr);
+    }
+
+    .flow-step {
+      background: var(--bg);
+      padding: 28px 20px;
+      min-height: 200px;
+    }
+
+    .flow-step strong {
+      display: block;
+      color: var(--orange);
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 400;
+      margin-bottom: 50px;
+    }
+
+    .flow-step h3 {
+      font-size: 14px;
+      margin: 0 0 8px;
+    }
+
+    .flow-step p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 20px 22px;
+      border-radius: 18px;
+      background: var(--orange);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      font-size: 13px;
+    }
+
+    /* OPS */
+
+    .ops-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: clamp(26px,4vw,48px);
+      background: var(--surface);
+    }
+
+    .panel h3 {
+      font-family: var(--serif);
+      font-size: clamp(2rem,3.5vw,3.6rem);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -.04em;
+      margin: 0;
+    }
+
+    .file-tree {
+      margin-top: 30px;
+      font-family: ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-size: 12px;
+      line-height: 1.85;
+      color: var(--muted);
+    }
+
+    .file-tree b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .data-list {
+      margin-top: 30px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .data-row span:last-child {
+      color: var(--muted);
+    }
+
+    /* ANALYTICS */
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 210px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--surface);
+    }
+
+    .metric-value {
+      font-family: var(--serif);
+      font-size: clamp(3rem,5vw,5.4rem);
+      line-height: .85;
+      letter-spacing: -.04em;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+    }
+
+    /* EVOLUTION */
+
+    .evolution {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 12px;
+    }
+
+    .evolution-card {
+      padding: 30px;
+      min-height: 330px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .evolution-card .phase {
+      font-size: 11px;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .evolution-card h3 {
+      font-family: var(--serif);
+      font-size: 2.8rem;
+      line-height: .95;
+      font-weight: 400;
+      letter-spacing: -.035em;
+      margin: 60px 0 20px;
+    }
+
+    .evolution-card p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    /* FINAL */
+
+    .final {
+      min-height: 82svh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--espresso);
+      color: white;
+    }
+
+    .final::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(231,100,44,.28), transparent 28%),
+        radial-gradient(circle at 10% 80%, rgba(231,100,44,.11), transparent 25%);
+    }
+
+    .final-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .final h2 {
+      font-family: var(--serif);
+      font-size: clamp(4rem,10vw,10rem);
+      line-height: .82;
+      letter-spacing: -.055em;
+      font-weight: 400;
+      max-width: 1180px;
+      margin: 0;
+    }
+
+    .final h2 em {
+      color: var(--orange);
+      font-style: italic;
+    }
+
+    .final-bottom {
+      margin-top: 55px;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 40px;
+    }
+
+    .final-bottom p {
+      color: rgba(255,255,255,.6);
+      max-width: 520px;
+      line-height: 1.55;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 32px 0 50px;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+    }
+
+    @media (max-width: 1050px) {
+      .business-grid {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .journey {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .flow {
+        grid-template-columns: repeat(3,1fr);
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2,1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      :root {
+        --page: calc(100vw - 28px);
+      }
+
+      .desktop-nav {
+        display: none;
+      }
+
+      .menu-trigger {
+        display: grid;
+      }
+
+      .section {
+        padding: 88px 0;
+      }
+
+      .section-head,
+      .hero-sub,
+      .ops-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        gap: 28px;
+        margin-bottom: 36px;
+      }
+
+      .section-head .lead {
+        justify-self: start;
+      }
+
+      .hero-content {
+        padding-bottom: 28px;
+      }
+
+      .hero .display {
+        font-size: clamp(3.9rem,18vw,6.4rem);
+      }
+
+      .hero-media img {
+        object-position: 64% 50%;
+      }
+
+      .hero-topline span:last-child {
+        display: none;
+      }
+
+      .hero-actions {
+        justify-content: flex-start;
+      }
+
+      .business-grid,
+      .metrics,
+      .evolution {
+        grid-template-columns: 1fr;
+      }
+
+      .channel-row {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .core-row {
+        grid-template-columns: 1fr;
+      }
+
+      .action-row {
+        grid-template-columns: 1fr;
+      }
+
+      .journey {
+        grid-template-columns: 86% 86% 86% 86% 86%;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 8px;
+      }
+
+      .journey-card {
+        scroll-snap-align: start;
+      }
+
+      .flow {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .notice {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .final-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .footer-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .site-header {
+        top: 10px;
+      }
+
+      .header-inner {
+        height: 58px;
+      }
+
+      .round-btn {
+        width: 42px;
+        height: 42px;
+      }
+
+      .channel-row,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .business-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .business-card {
+        min-height: 220px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+
+    <a class="brand" href="#top" aria-label="Grupo Pipa — Home">
+      <img
+        src="https://res.cloudinary.com/dqje367sj/image/upload/v1790020543/4_vjyuk4.png"
+        alt="Grupo Pipa"
+      >
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#journey">Journey</a>
+      <a href="#reservations">Reservations</a>
+      <a href="#operations">Operations</a>
+      <a href="#growth">Growth</a>
+    </nav>
+
+    <div class="header-actions">
+      <button
+        class="round-btn"
+        id="themeToggle"
+        aria-label="Switch Day / Night theme"
+      >
+        <span class="theme-icon"></span>
+      </button>
+
+      <button
+        class="round-btn menu-trigger"
+        id="menuTrigger"
+        aria-label="Open navigation"
+        aria-expanded="false"
+        aria-controls="mobileMenu"
+      >
+        ☰
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <div class="mobile-menu-top">
+    <img
+      src="https://res.cloudinary.com/dqje367sj/image/upload/v1790020543/4_vjyuk4.png"
+      alt="Grupo Pipa"
+    >
+
+    <button class="round-btn" id="menuClose" aria-label="Close navigation">
+      ×
+    </button>
+  </div>
+
+  <nav class="mobile-links">
+    <a href="#ecosystem">Ecosystem</a>
+    <a href="#journey">Journey</a>
+    <a href="#reservations">Reservations</a>
+    <a href="#operations">Operations</a>
+    <a href="#growth">Growth</a>
+  </nav>
+
+  <div class="mobile-menu-bottom">
+    <a href="https://grupopipa.vercel.app/" target="_blank">Grupo Pipa ↗</a>
+    <a href="https://multimenu-pipa.vercel.app/" target="_blank">Menus ↗</a>
+  </div>
+</div>
+
+
+<main id="top">
+
+  <!-- HERO -->
+
+  <section class="hero">
+    <div class="hero-media">
+      <img
+        src="https://res.cloudinary.com/dqje367sj/image/upload/v1792337273/IMG_2442_h8wwp3.jpg"
+        alt="Praia da Pipa"
+      >
+    </div>
+
+    <div class="hero-content">
+
+      <div class="hero-topline">
+        <span>Grupo Pipa · Digital Ecosystem</span>
+        <span>Praia da Pipa · Brasil</span>
+      </div>
+
+      <h1 class="display">
+        Same energy.<br>
+        More connections.
+      </h1>
+
+      <div class="hero-sub">
+        <p>
+          An interconnected hospitality ecosystem where each business keeps
+          its identity while sharing discovery, conversion, menus,
+          reservation workflows, data and digital infrastructure.
+        </p>
+
+        <div class="hero-actions">
+          <a
+            class="btn btn-light"
+            href="https://grupopipa.vercel.app/"
+            target="_blank"
+          >
+            Grupo Pipa ↗
+          </a>
+
+          <a
+            class="btn btn-ghost-light"
+            href="https://multimenu-pipa.vercel.app/"
+            target="_blank"
+          >
+            Open menus ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- MARQUEE -->
+
+  <div class="marquee-wrap" aria-hidden="true">
+    <div class="marquee">
+      <span>Stay</span>
+      <span>Eat</span>
+      <span>Day</span>
+      <span>Wellness</span>
+      <span>Menus</span>
+      <span>Reservations</span>
+      <span>Google</span>
+      <span>Reviews</span>
+
+      <span>Stay</span>
+      <span>Eat</span>
+      <span>Day</span>
+      <span>Wellness</span>
+      <span>Menus</span>
+      <span>Reservations</span>
+      <span>Google</span>
+      <span>Reviews</span>
+    </div>
+  </div>
+
+
+  <!-- STATEMENT -->
+
+  <section class="section">
+    <div class="container reveal">
+      <div class="statement">
+        <span class="eyebrow">The model</span>
+
+        <p>
+          Not a super-app.<br>
+          Not another directory.<br>
+          A connected digital layer built around
+          <em>real businesses and real actions.</em>
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- PORTFOLIO -->
+
+  <section class="section" style="padding-top:0">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Current portfolio</span>
+          <h2 class="section-title">Eight businesses.<br>One ecosystem.</h2>
+        </div>
+
+        <p class="lead">
+          Grupo Pipa connects the businesses without erasing what makes
+          each of them distinct.
+        </p>
+      </div>
+
+      <div class="business-grid">
+
+        <article class="business-card reveal">
+          <span class="number">01</span>
+          <div>
+            <h3>Nami Madeiro</h3>
+            <p>Stay · Eat · Day</p>
+          </div>
+        </article>
+
+        <article class="business-card reveal">
+          <span class="number">02</span>
+          <div>
+            <h3>Makai Pool Club</h3>
+            <p>Day · Pool</p>
+          </div>
+        </article>
+
+        <article class="business-card reveal">
+          <span class="number">03</span>
+          <div>
+            <h3>UMI Fun Kitchen</h3>
+            <p>Eat</p>
+          </div>
+        </article>
+
+        <article class="business-card reveal">
+          <span class="number">04</span>
+          <div>
+            <h3>TAO</h3>
+            <p>Eat</p>
+          </div>
+        </article>
+
+        <article class="business-card reveal">
+          <span class="number">05</span>
+          <div>
+            <h3>Health Club</h3>
+            <p>Wellness</p>
+          </div>
+        </article>
+
+        <article class="business-card reveal">
+          <span class="number">06</span>
+          <div>
+            <h3>Casa Palmeira</h3>
+            <p>Stay</p>
+          </div>
+        </article>
+
+        <article class="business-card reveal">
+          <span class="number">07</span>
+          <div>
+            <h3>Casa Cabana</h3>
+            <p>Stay</p>
+          </div>
+        </article>
+
+        <article class="business-card reveal">
+          <span class="number">08</span>
+          <div>
+            <h3>Recanto de Ibiza</h3>
+            <p>Stay</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ECOSYSTEM -->
+
+  <section class="section" id="ecosystem">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Digital architecture</span>
+          <h2 class="section-title">Multiple entry points.<br>One connected journey.</h2>
+        </div>
+
+        <p class="lead">
+          The platform does not force every guest through the same funnel.
+          Google, Maps, Instagram, Booking, Tripadvisor and physical QR
+          can all become valid entrances.
+        </p>
+      </div>
+
+      <div class="architecture reveal">
+
+        <div class="channel-row">
+          <div class="channel">Google Search</div>
+          <div class="channel">Google Maps</div>
+          <div class="channel">Instagram</div>
+          <div class="channel">Tripadvisor / Booking</div>
+        </div>
+
+        <div class="architecture-arrow"></div>
+
+        <div class="core-row">
+          <div class="core">
+            <h3>Grupo Pipa</h3>
+            <p>
+              Corporate discovery, businesses, experiences,
+              collaborations and conversion.
+            </p>
+          </div>
+
+          <div class="core orange">
+            <h3>Physical QR</h3>
+            <p>
+              Direct context-aware entry from tables,
+              hotels, reception, pool and venue spaces.
+            </p>
+          </div>
+        </div>
+
+        <div class="architecture-arrow"></div>
+
+        <div class="core-row" style="max-width:500px">
+          <div class="core">
+            <h3>Multimenu</h3>
+            <p>
+              Personalized venue menu experience connected to
+              useful real-world actions.
+            </p>
+          </div>
+        </div>
+
+        <div class="architecture-arrow"></div>
+
+        <div class="action-row">
+          <div class="action-node">WhatsApp</div>
+          <div class="action-node">Booking</div>
+          <div class="action-node">Maps</div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- CUSTOMER JOURNEY -->
+
+  <section class="section" id="journey">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Customer journey</span>
+          <h2 class="section-title">From morning<br>to evening.</h2>
+        </div>
+
+        <p class="lead">
+          Cross-selling should feel like useful local context, not corporate
+          advertising.
+        </p>
+      </div>
+
+      <div class="journey">
+
+        <article class="journey-card reveal">
+          <img
+            src="https://res.cloudinary.com/dqje367sj/image/upload/v1792344156/IMG_2490_csn8zz.jpg"
+            alt="Casa Palmeira"
+          >
+          <div class="journey-copy">
+            <small>Morning</small>
+            <h3>Stay</h3>
+          </div>
+        </article>
+
+        <article class="journey-card reveal">
+          <img
+            src="https://res.cloudinary.com/dqje367sj/image/upload/v1792337256/IMG_2338_lqbgfm.jpg"
+            alt="Makai Pool Club"
+          >
+          <div class="journey-copy">
+            <small>Day</small>
+            <h3>Pool</h3>
+          </div>
+        </article>
+
+        <article class="journey-card reveal">
+          <img
+            src="https://res.cloudinary.com/dqje367sj/image/upload/v1792337257/IMG_2602_tw7rdk.jpg"
+            alt="Nami Madeiro restaurant"
+          >
+          <div class="journey-copy">
+            <small>Food</small>
+            <h3>Eat</h3>
+          </div>
+        </article>
+
+        <article class="journey-card reveal">
+          <img
+            src="https://res.cloudinary.com/dqje367sj/image/upload/v1792337255/IMG_2341_eigcci.jpg"
+            alt="Health Club"
+          >
+          <div class="journey-copy">
+            <small>Wellness</small>
+            <h3>Move</h3>
+          </div>
+        </article>
+
+        <article class="journey-card reveal">
+          <img
+            src="https://res.cloudinary.com/dqje367sj/image/upload/v1792337247/IMG_2463_aa7fci.jpg"
+            alt="Sunset in Pipa"
+          >
+          <div class="journey-copy">
+            <small>Evening</small>
+            <h3>Connect</h3>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- RESERVATIONS -->
+
+  <section class="section" id="reservations">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Reservations</span>
+          <h2 class="section-title">Digital request.<br>Human confirmation.</h2>
+        </div>
+
+        <p class="lead">
+          Grupo Pipa does not need to pretend it has real-time availability
+          when the operation is still managed by the venue team.
+        </p>
+      </div>
+
+      <div class="flow reveal">
+
+        <div class="flow-step">
+          <strong>01</strong>
+          <h3>Choose</h3>
+          <p>Business and reservation intent.</p>
+        </div>
+
+        <div class="flow-step">
+          <strong>02</strong>
+          <h3>Specify</h3>
+          <p>Date, time, guests and relevant requests.</p>
+        </div>
+
+        <div class="flow-step">
+          <strong>03</strong>
+          <h3>Review</h3>
+          <p>Customer reviews the structured ticket.</p>
+        </div>
+
+        <div class="flow-step">
+          <strong>04</strong>
+          <h3>Send</h3>
+          <p>WhatsApp or valid venue booking channel.</p>
+        </div>
+
+        <div class="flow-step">
+          <strong>05</strong>
+          <h3>Process</h3>
+          <p>Staff checks real availability and conditions.</p>
+        </div>
+
+        <div class="flow-step">
+          <strong>06</strong>
+          <h3>Confirm</h3>
+          <p>Only staff can confirm, change or decline.</p>
+        </div>
+
+      </div>
+
+      <div class="notice reveal">
+        <strong>Reservation request ≠ confirmed reservation.</strong>
+        <span>
+          The digital layer organizes intent. Operations remain grounded in reality.
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- QR -->
+
+  <section class="section">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">QR infrastructure</span>
+          <h2 class="section-title">The venue becomes<br>a digital entry point.</h2>
+        </div>
+
+        <p class="lead">
+          A table, hotel room, counter, reception desk or pool area can connect
+          directly into the relevant digital experience.
+        </p>
+      </div>
+
+      <div class="business-grid">
+
+        <div class="business-card reveal">
+          <span class="number">GP-UMI-MENU-001</span>
+          <div>
+            <h3>Table QR</h3>
+            <p>UMI → Menu</p>
+          </div>
+        </div>
+
+        <div class="business-card reveal">
+          <span class="number">GP-NAMI-STAY-001</span>
+          <div>
+            <h3>Stay QR</h3>
+            <p>Nami → Accommodation enquiry</p>
+          </div>
+        </div>
+
+        <div class="business-card reveal">
+          <span class="number">GP-MAKAI-MENU-001</span>
+          <div>
+            <h3>Pool QR</h3>
+            <p>Makai → Menu</p>
+          </div>
+        </div>
+
+        <div class="business-card reveal">
+          <span class="number">GP-HEALTH-001</span>
+          <div>
+            <h3>Reception QR</h3>
+            <p>Health → Plans / enquiry</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- OPERATIONS -->
+
+  <section class="section" id="operations">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Operations</span>
+          <h2 class="section-title">One source of truth.<br>Two interfaces.</h2>
+        </div>
+
+        <p class="lead">
+          Google Drive organizes information for people. Structured data keeps
+          websites and automation reliable.
+        </p>
+      </div>
+
+      <div class="ops-grid">
+
+        <div class="panel reveal">
+          <span class="eyebrow">Human layer</span>
+          <h3>Grupo Pipa Digital Hub</h3>
+
+          <div class="file-tree">
+            <b>GRUPO PIPA DIGITAL HUB</b><br>
+            ├── 00_MASTER<br>
+            ├── 01_BRAND_GRUPO_PIPA<br>
+            ├── <b>02_BUSINESSES</b><br>
+            │&nbsp;&nbsp;&nbsp; ├── NAMI<br>
+            │&nbsp;&nbsp;&nbsp; ├── MAKAI_POOL<br>
+            │&nbsp;&nbsp;&nbsp; ├── UMI<br>
+            │&nbsp;&nbsp;&nbsp; ├── TAO<br>
+            │&nbsp;&nbsp;&nbsp; ├── HEALTH_CLUB<br>
+            │&nbsp;&nbsp;&nbsp; ├── CASA_PALMEIRA<br>
+            │&nbsp;&nbsp;&nbsp; ├── CASA_CABANA<br>
+            │&nbsp;&nbsp;&nbsp; └── RECANTO_DE_IBIZA<br>
+            ├── 03_MENUS_QR<br>
+            ├── 04_PHOTO_VIDEO<br>
+            ├── 08_SEO_LOCAL_PRESENCE<br>
+            └── 99_ARCHIVE
+          </div>
+        </div>
+
+        <div class="panel reveal">
+          <span class="eyebrow">Machine layer</span>
+          <h3>Structured registry</h3>
+
+          <div class="data-list">
+            <div class="data-row">
+              <span>Identity</span>
+              <span>Canonical</span>
+            </div>
+            <div class="data-row">
+              <span>Branding</span>
+              <span>Versioned</span>
+            </div>
+            <div class="data-row">
+              <span>Contacts</span>
+              <span>Verified</span>
+            </div>
+            <div class="data-row">
+              <span>Maps</span>
+              <span>Linked</span>
+            </div>
+            <div class="data-row">
+              <span>Menus</span>
+              <span>Structured</span>
+            </div>
+            <div class="data-row">
+              <span>Media</span>
+              <span>Provenance</span>
+            </div>
+            <div class="data-row">
+              <span>Reservations</span>
+              <span>Ticket-based</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- LOCAL PRESENCE -->
+
+  <section class="section" id="growth">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Local presence</span>
+          <h2 class="section-title">The ecosystem extends<br>beyond the website.</h2>
+        </div>
+
+        <p class="lead">
+          The same business should not tell five different stories across
+          Google, Instagram, Tripadvisor, Booking and Grupo Pipa.
+        </p>
+      </div>
+
+      <div class="architecture reveal">
+        <div class="channel-row">
+          <div class="channel">Google Business</div>
+          <div class="channel">Tripadvisor</div>
+          <div class="channel">Booking.com</div>
+          <div class="channel">Instagram</div>
+        </div>
+
+        <div class="architecture-arrow"></div>
+
+        <div class="core-row" style="max-width:600px">
+          <div class="core orange">
+            <h3>Consistent data</h3>
+            <p>
+              Name, description, photos, links, Maps, contact,
+              menus and business identity.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ANALYTICS -->
+
+  <section class="section">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Measurement</span>
+          <h2 class="section-title">From digital presence<br>to business intelligence.</h2>
+        </div>
+
+        <p class="lead">
+          Once analytics are active, Grupo Pipa can measure which entry points
+          and businesses actually create intent and conversion.
+        </p>
+      </div>
+
+      <div class="metrics">
+
+        <div class="metric reveal">
+          <span class="metric-label">Example · QR scans</span>
+          <div class="metric-value">8k</div>
+        </div>
+
+        <div class="metric reveal">
+          <span class="metric-label">Example · Menu opens</span>
+          <div class="metric-value">6.2k</div>
+        </div>
+
+        <div class="metric reveal">
+          <span class="metric-label">Example · WhatsApp clicks</span>
+          <div class="metric-value">900</div>
+        </div>
+
+        <div class="metric reveal">
+          <span class="metric-label">Example · Requests</span>
+          <div class="metric-value">310</div>
+        </div>
+
+      </div>
+
+      <p class="small" style="margin-top:16px">
+        Illustrative metrics only — not current Grupo Pipa performance data.
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- EVOLUTION -->
+
+  <section class="section">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Evolution</span>
+          <h2 class="section-title">Build the intelligence<br>in the right order.</h2>
+        </div>
+
+        <p class="lead">
+          Automation and AI become useful after the businesses, data,
+          conversion flows and staff processes are reliable.
+        </p>
+      </div>
+
+      <div class="evolution">
+
+        <article class="evolution-card reveal">
+          <span class="phase">Phase 01</span>
+          <h3>Connect</h3>
+          <p>
+            Corporate, QR, menus, contact routing, Maps, Booking,
+            structured data and local presence.
+          </p>
+        </article>
+
+        <article class="evolution-card reveal">
+          <span class="phase">Phase 02</span>
+          <h3>Measure</h3>
+          <p>
+            Track scans, menus, enquiries, WhatsApp, Maps, Booking,
+            reviews and cross-business movement.
+          </p>
+        </article>
+
+        <article class="evolution-card reveal">
+          <span class="phase">Phase 03</span>
+          <h3>Automate</h3>
+          <p>
+            Staff notifications, follow-ups, review workflows,
+            recommendations and eventually multilingual AI assistance.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FINAL -->
+
+  <section class="final">
+    <div class="container final-content reveal">
+
+      <h2>
+        Eight businesses.<br>
+        One <em>digital layer.</em>
+      </h2>
+
+      <div class="final-bottom">
+        <p>
+          Grupo Pipa becomes shared infrastructure for discovery,
+          conversion, operations and growth — while every venue
+          remains recognizably itself.
+        </p>
+
+        <div class="hero-actions">
+          <a
+            class="btn btn-light"
+            href="https://grupopipa.vercel.app/"
+            target="_blank"
+          >
+            Open Grupo Pipa ↗
+          </a>
+
+          <a
+            class="btn btn-ghost-light"
+            href="https://multimenu-pipa.vercel.app/"
+            target="_blank"
+          >
+            Open Multimenu ↗
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+
+<footer>
+  <div class="container footer-row">
+    <span>Grupo Pipa · Digital Ecosystem</span>
+
+    <div class="footer-links">
+      <a href="https://grupopipa.vercel.app/" target="_blank">
+        Corporate ↗
+      </a>
+
+      <a href="https://multimenu-pipa.vercel.app/" target="_blank">
+        Menus ↗
+      </a>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  // ------------------------------------------
+  // THEME
+  // ------------------------------------------
+
+  const root = document.documentElement;
+  const themeToggle = document.getElementById("themeToggle");
+
+  const savedTheme = localStorage.getItem("gp-ecosystem-theme");
+
+  if (savedTheme === "night" || savedTheme === "day") {
+    root.dataset.theme = savedTheme;
+  }
+
+  themeToggle.addEventListener("click", () => {
+    const next =
+      root.dataset.theme === "night"
+        ? "day"
+        : "night";
+
+    root.dataset.theme = next;
+    localStorage.setItem("gp-ecosystem-theme", next);
+  });
+
+
+  // ------------------------------------------
+  // MOBILE MENU
+  // ------------------------------------------
+
+  const menu = document.getElementById("mobileMenu");
+  const openButton = document.getElementById("menuTrigger");
+  const closeButton = document.getElementById("menuClose");
+
+  let previousFocus = null;
+
+  function openMenu() {
+    previousFocus = document.activeElement;
+
+    menu.classList.add("open");
+    menu.setAttribute("aria-hidden", "false");
+
+    openButton.setAttribute("aria-expanded", "true");
+
+    document.body.classList.add("menu-open");
+
+    closeButton.focus();
+  }
+
+  function closeMenu() {
+    menu.classList.remove("open");
+    menu.setAttribute("aria-hidden", "true");
+
+    openButton.setAttribute("aria-expanded", "false");
+
+    document.body.classList.remove("menu-open");
+
+    if (previousFocus) {
+      previousFocus.focus();
+    }
+  }
+
+  openButton.addEventListener("click", openMenu);
+  closeButton.addEventListener("click", closeMenu);
+
+  menu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", closeMenu);
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && menu.classList.contains("open")) {
+      closeMenu();
+    }
+
+    if (
+      event.key === "Tab" &&
+      menu.classList.contains("open")
+    ) {
+      const focusables = [
+        ...menu.querySelectorAll(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ];
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+
+      if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+
+  // ------------------------------------------
+  // SCROLL REVEALS
+  // ------------------------------------------
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  const revealElements = document.querySelectorAll(".reveal");
+
+  if (reducedMotion) {
+    revealElements.forEach(el => el.classList.add("visible"));
+  } else {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+      }
+    );
+
+    revealElements.forEach(el => observer.observe(el));
+  }
+</script>
+
+</body>
+</html>
